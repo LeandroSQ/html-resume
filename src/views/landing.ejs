@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Leandro Quevedo - Resume</title>
+        <link rel="stylesheet" href="landing.css"/>
+    </head>
+    <body>
+        <section id="wrapper">
+            <%- include("../partials/content.html") %>
+        </section>
+
+        <footer onclick="downloadPDF()">
+            <button>
+                <img src="assets/ic_download.svg"/>
+                Download in PDF
+            </button>
+        </footer>
+
+        <script type="text/javascript">
+            function downloadPDF() {
+                window.open("resume.pdf");
+
+                const a = document.createElement("a");
+                a.href = "resume.pdf";
+                a.download = "Leandro Quevedo - resume.pdf";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+        </script>
+    </body>
+</html>

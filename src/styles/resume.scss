@@ -1,0 +1,30 @@
+@import "content";
+
+/* Light mode */
+html {
+    background: #bfc2c9;
+
+    body {
+        background: #f5f5f5;
+
+        h1, h2, h3 {
+            color: #1f4458;
+        }
+
+        p, li, header h2 {
+            color: #181818;
+        }
+
+        a {
+            color: #2683a8;
+        }
+
+    }
+}
+
+/* Printing */
+html,
+body {
+    min-width: 100%;
+    min-height: 100%;
+}

@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-$grid-spacing: 5pt;
+$grid-spacing: 7.5pt;
 
 * {
     margin: 0px;
@@ -9,25 +9,10 @@ $grid-spacing: 5pt;
     font-family: 'Raleway', sans-serif;
 }
 
-/* html {
-    background-color: #efefef;
-
-    body {
-        width: 793.701px;
-	    min-height: 1122.52px;
-    }
-} */
-
-html, body {
-    min-width: 100%;
-    min-height: 100%;
-}
-
-body {
+#wrapper {
     position: relative;
     display: block;
-    background-color: white;
-    padding: 50pt 50pt;
+    padding: 35pt 50pt;
     -webkit-print-color-adjust: exact;
 }
 
@@ -36,14 +21,17 @@ h1, h2, p.title {
 }
 
 a {
-    color: black;
     text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
 header {
     display: flex;
     justify-content: space-evenly;
-	align-items: flex-start;
+    align-items: flex-start;
     margin-bottom: $grid-spacing;
 
     h1 {
@@ -128,7 +116,8 @@ div.grid {
             letter-spacing: 0.07em;
         }
 
-        p, li {
+        p,
+        li {
             font-size: 11px;
             line-height: 1.5em;
             letter-spacing: 0.01em;
@@ -152,7 +141,7 @@ div.grid {
 
 
         div.block {
-            h3  {
+            h3 {
                 font-weight: 700;
                 font-size: 14.6667px;
                 line-height: 1.1em;
@@ -161,24 +150,6 @@ div.grid {
             }
         }
 
-    }
-
-}
-
-/* Dark mode */
-body {
-    background: #f5f5f5 !important;
-
-    h1, h2, h3 {
-        color: #1f4458;
-    }
-
-    p, li, header h2 {
-        color: #181818;
-    }
-
-    a {
-        color: rgb(38, 131, 168);
     }
 
 }
