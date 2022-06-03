@@ -1,0 +1,28 @@
+@media only screen and (max-width: 900px) {
+
+    html, body {
+        margin: 0px;
+        min-width: 100vw;
+        min-height: 100vh;
+        height: max-content;
+        box-shadow: none;
+        overflow-x: hidden;
+        border-radius: 0;
+    }
+
+    footer {
+        width: min(50%, 250px);
+        height: 100%;
+        margin: 0 auto;
+        margin-bottom: 50pt;
+        border-radius: 7.5pt;
+    }
+
+    header, footer {
+        margin-top: max(50pt, 2vh);
+    }
+
+    #wrapper {
+        padding: 1vw 50pt;
+    }
+}

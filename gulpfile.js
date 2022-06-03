@@ -5,13 +5,13 @@ const del = require("del");
 const htmlMinify = require("gulp-htmlmin");
 const sourcemaps = require("gulp-sourcemaps");
 const sass = require("gulp-sass")(require("sass"));
-const cssAutoPrefixer = require("gulp-autoprefixer");
-const concat = require("gulp-concat");
-const inlineCss = require("gulp-inline-css");
-const pdf = require("gulp-html-pdf");
+const postcss = require("gulp-postcss");
+const autoprefixer = require("autoprefixer");
 const path = require("path");
 const ejs = require("gulp-ejs");
 const rename = require("gulp-rename");
+const uglify = require("gulp-uglify");
+const puppeteer = require("puppeteer");
 
 // Options
 const browserSyncOptions = {
@@ -38,32 +38,35 @@ const cssOptions = {
 	sourceMap: false,
 };
 
-const inlineCssOptions = {
-    preserveMediaQueries: false,
-    removeStyleTags: true,
-    removeLinkTags: false,
-    applyLinkTags: true,
-    applyStyleTags: false,
-    url: "file://" + path.join(__dirname, "dist") + path.sep,
-};
-
 const pdfOptions = {
 	format: "A4",
 	orientation: "portrait",
-	border: "0mm",
-	margin: {
-		top: "0mm",
-		right: "0mm",
-		bottom: "0mm",
-		left: "0mm",
-	},
+	border: "0",
 	printBackground: true,
 	pageRanges: "1",
-	preferCSSPageSize: true
+	preferCSSPageSize: false,
 };
 
 const ejsOptions = {
 
+};
+
+const autoPrefixerOptions = {
+	grid: "autoplace",
+	remove: false,
+};
+
+const jsOptions = {
+
+};
+
+const puppeteerOptions = {
+	headless: true,
+	args: [
+		"--no-sandbox",
+		"--disable-setuid-sandbox",
+		"--disable-web-security",
+	],
 };
 
 // Tasks
@@ -71,24 +74,46 @@ function reload() {
 	return browserSync.reload({ stream: true });
 }
 
-function handlePDF() {
-    return src("dist/resume.html")
-		.pipe(pdf(pdfOptions))
-		.pipe(dest("./dist"));
+function delay(amount) {
+	return new Promise((resolve, _) => {
+		setTimeout(() => {
+			resolve();
+		}, amount);
+	});
 }
 
-function handleResumeHtml() {
-    return src("src/views/resume.ejs")
-		.pipe(ejs(ejsOptions))
-		.pipe(inlineCss(inlineCssOptions))
-		.pipe(htmlMinify(htmlOptions))
-		.pipe(rename({ extname: ".html" }))
-		.pipe(dest("./dist"))
-		.pipe(reload());
+async function handlePDF(callback) {
+    const input = `dist/index.html`;
+	const output = `dist/resume.pdf`;
+
+	// Mount the local file system to the remote URL
+	const filename = `file://${path.join(
+		__dirname,
+		input.replace("/", path.sep)
+	)}`;
+
+	// Open the browser
+	const browser = await puppeteer.launch(puppeteerOptions);
+	// Open a new tab
+	const page = await browser.newPage();
+	// Navigate to the resume.html file
+	await page.goto(filename);
+
+	// Define global variable for ignoring mobile css when generating the PDF
+	await page.evaluate(function () { window._printing = true; });
+	await page.waitForSelector(".masonry", { waitUntil: "networkidle0" });
+	await delay(500);
+	
+	// Generate the PDF
+	await page.pdf({ ...pdfOptions, path: output });
+	// Close the browser
+	await browser.close();
+
+	callback();
 }
 
-function handleLandingPageHtml() {
-    return src("src/views/landing.ejs")
+function handleHTML() {
+    return src("src/views/index.ejs")
 		.pipe(ejs(ejsOptions))
 		.pipe(htmlMinify(htmlOptions))
         .pipe(rename("index.html"))
@@ -97,22 +122,34 @@ function handleLandingPageHtml() {
 }
 
 function watchHtml() {
-	return watch(["src/**/*.html", "src/**/*.ejs"], parallel(handleResumeHtml, handleLandingPageHtml, handlePDF));
+	return watch(["src/**/*.html", "src/**/*.ejs"], parallel(handleHTML, handlePDF));
 }
 
 function handleSCSS() {
 	return src("src/styles/*.scss")
 		.pipe(sourcemaps.init())
 		.pipe(sass(cssOptions).on("error", sass.logError))
-		.pipe(cssAutoPrefixer())
-		// .pipe(concat("resume.min.css"))
+		.pipe(postcss([autoprefixer(autoPrefixerOptions)]))
 		.pipe(sourcemaps.write("./"))
 		.pipe(dest("./dist"))
 		.pipe(reload());
 }
 
 function watchSCSS() {
-	return watch("src/**/*.scss", series(handleSCSS, module.exports.html));
+	return watch("src/**/*.scss", series(handleSCSS, handleHTML, handlePDF));
+}
+
+function handleJS() {
+	return src("src/scripts/*.js")
+		.pipe(sourcemaps.init())
+		.pipe(uglify(jsOptions))
+		.pipe(sourcemaps.write("./"))
+		.pipe(dest("./dist"))
+		.pipe(reload());
+}
+
+function watchJS() {
+	return watch("src/**/*.js", handleJS);
 }
 
 function handleAssets() {
@@ -132,11 +169,12 @@ function initialize() {
 // Export tasks
 module.exports.assets = handleAssets;
 module.exports.pdf = handlePDF;
-module.exports.html = parallel(handleResumeHtml, handleLandingPageHtml);
+module.exports.html = handleHTML;
 module.exports.scss = handleSCSS;
+module.exports.js = handleJS;
 module.exports.clean = clean;
 
-const build = series(module.exports.clean, module.exports.assets, module.exports.scss, module.exports.html);
+const build = series(module.exports.clean, module.exports.assets, module.exports.scss, module.exports.html, module.exports.js);
+module.exports.dev = series(build, parallel(watchHtml, watchSCSS, watchJS, initialize));
 module.exports.build = series(build, module.exports.pdf);
-module.exports.dev = series(build, parallel(watchHtml, watchSCSS, initialize));
 module.exports.default = module.exports.build;

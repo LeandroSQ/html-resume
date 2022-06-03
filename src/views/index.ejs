@@ -5,7 +5,9 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Leandro Quevedo - Resume</title>
+        <%- include("../partials/font.html") %>
         <link rel="stylesheet" href="landing.css"/>
+        <script src="https://unpkg.com/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"></script>
     </head>
     <body>
         <section id="wrapper">
@@ -14,22 +16,12 @@
 
         <footer onclick="downloadPDF()">
             <button>
-                <img src="assets/ic_download.svg"/>
-                Download in PDF
+                <img src="assets/ic_download.svg" alt="Download pdf icon"/>
+                Download as PDF
             </button>
         </footer>
 
-        <script type="text/javascript">
-            function downloadPDF() {
-                window.open("resume.pdf");
-
-                const a = document.createElement("a");
-                a.href = "resume.pdf";
-                a.download = "Leandro Quevedo - resume.pdf";
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            }
-        </script>
+        <script type="text/javascript" src="landing.js"></script>
+        <script type="text/javascript" src="masonry.js"></script>
     </body>
 </html>

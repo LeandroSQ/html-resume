@@ -1,5 +1,3 @@
-@import "content";
-
 /* Light mode */
 html {
     background: #bfc2c9;
@@ -20,11 +18,9 @@ html {
         }
 
     }
-}
 
-/* Printing */
-html,
-body {
-    min-width: 100%;
-    min-height: 100%;
+    footer {
+        background: #dddddd;
+        color: #1f4458;
+    }
 }

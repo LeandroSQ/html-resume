@@ -1,18 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
-$grid-spacing: 7.5pt;
+$grid-spacing: 8pt;
 
 * {
     margin: 0px;
     padding: 0px;
     box-sizing: border-box;
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Raleway';
 }
 
 #wrapper {
     position: relative;
     display: block;
-    padding: 35pt 50pt;
+    padding: 50pt 50pt;
     -webkit-print-color-adjust: exact;
 }
 
@@ -85,7 +83,7 @@ div.grid {
         section {
             display: grid;
             gap: $grid-spacing;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(280px, auto));
             grid-template-rows: auto;
         }
     }
@@ -93,22 +91,35 @@ div.grid {
     #work-history {
         grid-area: work-history;
 
-        section {
-            float: none;
-            display: grid;
-            gap: $grid-spacing;
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: masonry;
-            align-tracks: stretch;
+        section.masonry {
+            position: relative;
+            min-height: 645px;
 
             div.block {
-                height: fit-content;
+                will-change: transform;
+                opacity: 0;
+                transform: translate(50%, 50%);
+                transition: opacity 1s, transform 500ms;
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                width: max(280px, calc(50% - 10px));
+            }
+        }
+
+        section:not(.masonry) {
+            display: grid;
+            gap: $grid-spacing;
+            grid-template-columns: repeat(auto-fill, minmax(280px, auto));
+            grid-template-rows: auto;
+
+            div.block {
+                margin-top: 10pt;
             }
         }
     }
 
     section {
-
         h2 {
             font-weight: 700;
             font-size: 17.3333px;
@@ -116,10 +127,9 @@ div.grid {
             letter-spacing: 0.07em;
         }
 
-        p,
-        li {
+        p, li {
             font-size: 11px;
-            line-height: 1.5em;
+            line-height: 1.4em;
             letter-spacing: 0.01em;
             font-weight: 400;
             text-align: justify;
@@ -139,14 +149,13 @@ div.grid {
             }
         }
 
-
         div.block {
             h3 {
                 font-weight: 700;
                 font-size: 14.6667px;
                 line-height: 1.1em;
                 letter-spacing: 0em;
-                margin-top: 10pt;
+                // margin-top: 10pt;
             }
         }
 
