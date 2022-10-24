@@ -6,8 +6,14 @@ This repository contains the source code I wrote for generating my resume.
 
 ## Motivation
 
-I tried using Word, Canva and other tools but couldn't get them to look like what I wanted. Therefore I decided to write my resume in Markdown, which was simple enough but does not provide styling so I moved to HTML.
-This project is basically a Website, you can see it on the [Live demo](https://leandrosq.github.io/html-resume/), what happens is that the style adequate to A4 page when printing the HTML page. This worked really great and it took ~30 minutes to finish the first version, so I decided to automate the process of generating the resume using puppeteer and make a landing page with it as well.
+After frustration in trying to write my Resume in Word, Canva, and other tools, I considered Markdown, but it would not provide the styling I was looking for, HTML + CSS felt like the right choice for a quick prototype.
+After ~30 minutes, I got my .pdf resume file using the Browser print dialog.
+
+A few people asked me for the source code, hence this repository.
+
+For some sugar, added CI and puppeteer to automate the .pdf generation, uploaded it to Github pages for a nice landing page, and this is the current status of this project.
+
+The good thing is maintainability, it is extremely simple to revisit this and update it.
 
 ## Features
 
